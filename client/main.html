@@ -3,17 +3,28 @@
 </head>
 
 <body>
-  <h1>Welcome to Meteor!</h1>
-  {{ #each tasks}}
-  {{ > task }}
-  {{ /each }}
+
 </body>
 
-<template name="task">
-    {{text}} {{ id }}
+<template name="Home">
+  <!-- <h1>Robot Challenge</h1> -->
+  {{ >currentLocation }}
+  {{ >buttons }}
 </template>
 
-<!-- <template name="currentLocation">
-  <p>Robot's current location is {{currentLocation}}.</p>
+<template name="currentLocation">
+  <h3>Current location is ({{ currentLocation }}) </h3>
+</template>
+
+<template name="buttons">
+    <button id="up">Up</button>
+    <button id="down">Down</button>
+    <button id="right">Right</button>
+    <button id="left">Left</button>
+</template>
+
+<!-- <template name="grid">
+
 </template> -->
+
 
