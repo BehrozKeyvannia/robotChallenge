@@ -14,7 +14,7 @@ if(Meteor.isClient){
   Template.currentLocation.onCreated(function(){
     HTTP.get(constants.baseUrl + constants.locationEndpoint, {}, function(error, response){
       if(response.statusCode === 200) {
-        Session.set('currentLocation', response.data);
+        Session.set('currentLocation', response.data.currentLocation);
       }
       else {
         console.warn("Error in request: " + JSON.stringify(error,null,2));
@@ -33,8 +33,8 @@ if(Meteor.isClient){
     'click  #up': function(){
       HTTP.post(constants.baseUrl + constants.goNorth, function(error, response){
         if(response.statusCode === 200) {
-          console.warn('http north >> ' + JSON.stringify(response,null,2));
-          Session.set('currentLocation', response.data)
+          console.warn('Robot >> north' );
+          Session.set('currentLocation', response.data.currentLocation)
         }
         else {
           console.warn("Error in request: " + JSON.stringify(error,null,2));
@@ -44,8 +44,8 @@ if(Meteor.isClient){
     'click  #down': function(){
       HTTP.post(constants.baseUrl + constants.goSouth, {}, function(error, response){
         if(response.statusCode === 200) {
-          console.warn('http south >> ' + response.data)
-          Session.set('currentLocation', response.data)
+          console.warn('Robot >> south' );
+          Session.set('currentLocation', response.data.currentLocation)
         }
         else {
           console.warn("Error in request: " + JSON.stringify(error,null,2));
@@ -55,8 +55,8 @@ if(Meteor.isClient){
     'click  #right': function(){
       HTTP.post(constants.baseUrl + constants.goEast, {}, function(error, response){
         if(response.statusCode === 200) {
-          console.warn('http east >> ' + response.data);
-          Session.set('currentLocation', response.data)
+          console.warn('Robot >> east' );
+          Session.set('currentLocation', response.data.currentLocation)
         }
         else {
           console.warn("Error in request: " + JSON.stringify(error,null,2));
@@ -66,8 +66,8 @@ if(Meteor.isClient){
     'click  #left': function(){
       HTTP.post(constants.baseUrl + constants.goWest, {}, function(error, response){
         if(response.statusCode === 200) {
-          console.warn('http west >> ' + response.data);
-          Session.set('currentLocation', response.data)
+          console.warn('Robot >> west' );
+          Session.set('currentLocation', response.data.currentLocation)
         }
         else {
           console.warn("Error in request: " + JSON.stringify(error,null,2));
