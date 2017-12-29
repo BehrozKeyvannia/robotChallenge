@@ -1,6 +1,10 @@
 import { Meteor } from 'meteor/meteor';
 import * as constants from '../../constants'
 
+//Checks if robot is inside the bounds limitation, returns bool
+const validRobotMove = () => {
+  
+}
 
 if(Meteor.isServer){
 
@@ -12,7 +16,8 @@ if(Meteor.isServer){
       Robot.insert({
         _id: "robot",
         x: 0,
-        y: 0
+        y: 0,
+        bounds: constants.bounds
       });
     }catch(e){
       //Already initiated
