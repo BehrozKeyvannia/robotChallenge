@@ -33,47 +33,65 @@ if(Meteor.isClient){
     'click  #up': function(){
       HTTP.post(constants.baseUrl + constants.goNorth, function(error, response){
         if(response.statusCode === 200) {
-          console.warn('Robot >> north' );
+          console.info('Robot >> north' );
           Session.set('currentLocation', response.data.currentLocation)
         }
         else {
-          console.warn("Error in request: " + JSON.stringify(error,null,2));
+          if( response.statusCode === 400 ) reportInvalidMove()
+          else{
+            console.error("Error in request: " + JSON.stringify(error,null,2));
+          }
+
         }
       });
     },
     'click  #down': function(){
       HTTP.post(constants.baseUrl + constants.goSouth, {}, function(error, response){
         if(response.statusCode === 200) {
-          console.warn('Robot >> south' );
+          console.info('Robot >> south' );
           Session.set('currentLocation', response.data.currentLocation)
         }
         else {
-          console.warn("Error in request: " + JSON.stringify(error,null,2));
+          if( response.statusCode === 400 ) reportInvalidMove()
+          else {
+            console.error("Error in request: " + JSON.stringify(error,null,2));
+          }
         }
       });
     },
     'click  #right': function(){
       HTTP.post(constants.baseUrl + constants.goEast, {}, function(error, response){
         if(response.statusCode === 200) {
-          console.warn('Robot >> east' );
+          console.info('Robot >> east' );
           Session.set('currentLocation', response.data.currentLocation)
         }
         else {
-          console.warn("Error in request: " + JSON.stringify(error,null,2));
+          if( response.statusCode === 400 ) reportInvalidMove()
+          else {
+            console.error("Error in request: " + JSON.stringify(error,null,2));
+          }
         }
       });
     },
     'click  #left': function(){
       HTTP.post(constants.baseUrl + constants.goWest, {}, function(error, response){
         if(response.statusCode === 200) {
-          console.warn('Robot >> west' );
+          console.info('Robot >> west' );
           Session.set('currentLocation', response.data.currentLocation)
         }
         else {
-          console.warn("Error in request: " + JSON.stringify(error,null,2));
+          if( response.statusCode === 400 ) reportInvalidMove()
+          else {
+            console.error("Error in request: " + JSON.stringify(error,null,2));
+          }
         }
       });
     },
   });
+
+  const reportInvalidMove = () => {
+    console.warn("Invalid move, Robot out of bounds");
+  }
+    
 }
 

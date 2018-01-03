@@ -2,8 +2,22 @@ import { Meteor } from 'meteor/meteor';
 import * as constants from '../../constants'
 
 //Checks if robot is inside the bounds limitation, returns bool
-const validRobotMove = () => {
-  
+const validRobotMove = (direction) => {
+  const robotData = Robot.findOne({ _id: "robot" })
+  switch (direction) {
+    case 'north':
+      if( (robotData.x - 1) <= robotData.bounds[0] && (robotData.x - 1) >= 0 ) return true;
+      else return false;
+    case 'south':
+      if( (robotData.x + 1) <= robotData.bounds[0] ) return true;
+      else return false;
+    case 'east':
+      if( (robotData.y - 1) <= robotData.bounds[1] && (robotData.y - 1) >= 0 ) return true;
+      else return false;
+    case 'west':
+      if( (robotData.y + 1) <= robotData.bounds[1] ) return true;
+      else return false;
+  }
 }
 
 if(Meteor.isServer){
@@ -41,52 +55,72 @@ if(Meteor.isServer){
   Router.route(constants.goNorth, {where: 'server'})
   .post(function(){
     var robotData = Robot.findOne({ _id: "robot" })
-    Robot.update('robot', { $set: { x: robotData.x - 1 }})
-    robotData = Robot.findOne({ _id: "robot" })
-    const result = {
-      currentLocation: [robotData.x, robotData.y]
+    if(validRobotMove('north')){
+      Robot.update('robot', { $set: { x: robotData.x - 1 }})
+      robotData = Robot.findOne({ _id: "robot" })
+      const result = {
+        currentLocation: [robotData.x, robotData.y]
+      }
+      this.response.setHeader('Content-Type','application/json');
+      this.response.end(JSON.stringify(result));
+    }else{
+      this.response.writeHead(400);
+      this.response.end("robot_out_of_bounds");
     }
-    this.response.setHeader('Content-Type','application/json');
-    this.response.end(JSON.stringify(result));
   });
 
   //Move robot one step to the south
   Router.route(constants.goSouth, {where: 'server'})
   .post(function(){
     var robotData = Robot.findOne({ _id: "robot" })
-    Robot.update('robot', { $set: { x: robotData.x + 1 }})
-    robotData = Robot.findOne({ _id: "robot" })
-    const result = {
-      currentLocation: [robotData.x, robotData.y]
+    if(validRobotMove('south')){
+      Robot.update('robot', { $set: { x: robotData.x + 1 }})
+      robotData = Robot.findOne({ _id: "robot" })
+      const result = {
+        currentLocation: [robotData.x, robotData.y]
+      }
+      this.response.setHeader('Content-Type','application/json');
+      this.response.end(JSON.stringify(result));
+    }else{
+      this.response.writeHead(400);
+      this.response.end("robot_out_of_bounds");
     }
-    this.response.setHeader('Content-Type','application/json');
-    this.response.end(JSON.stringify(result));
   });
 
   //Move robot one step to the west
   Router.route(constants.goWest, {where: 'server'})
   .post(function(){
     var robotData = Robot.findOne({ _id: "robot" })
-    Robot.update('robot', { $set: { y: robotData.y + 1 }})
-    robotData = Robot.findOne({ _id: "robot" })
-    const result = {
-      currentLocation: [robotData.x, robotData.y]
+    if(validRobotMove('west')){
+      Robot.update('robot', { $set: { y: robotData.y + 1 }})
+      robotData = Robot.findOne({ _id: "robot" })
+      const result = {
+        currentLocation: [robotData.x, robotData.y]
+      }
+      this.response.setHeader('Content-Type','application/json');
+      this.response.end(JSON.stringify(result));
+    }else{
+      this.response.writeHead(400);
+      this.response.end("robot_out_of_bounds");
     }
-    this.response.setHeader('Content-Type','application/json');
-    this.response.end(JSON.stringify(result));
   });
 
   //Move robot one step to the east
   Router.route(constants.goEast, {where: 'server'})
   .post(function(){
     var robotData = Robot.findOne({ _id: "robot" })
-    Robot.update('robot', { $set: { y: robotData.y - 1 }})
-    robotData = Robot.findOne({ _id: "robot" })
-    const result = {
-      currentLocation: [robotData.x, robotData.y]
+    if(validRobotMove('east')){
+      Robot.update('robot', { $set: { y: robotData.y - 1 }})
+      robotData = Robot.findOne({ _id: "robot" })
+      const result = {
+        currentLocation: [robotData.x, robotData.y]
+      }
+      this.response.setHeader('Content-Type','application/json');
+      this.response.end(JSON.stringify(result));
+    }else{
+      this.response.writeHead(400);
+      this.response.end("robot_out_of_bounds");
     }
-    this.response.setHeader('Content-Type','application/json');
-    this.response.end(JSON.stringify(result));
   });
 
 }
