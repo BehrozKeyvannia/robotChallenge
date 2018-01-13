@@ -6,16 +6,16 @@ const validRobotMove = (direction) => {
   const robotData = Robot.findOne({ _id: "robot" })
   switch (direction) {
     case 'north':
-      if( (robotData.x - 1) <= robotData.gridSize && (robotData.x - 1) >= 0 ) return true;
+      if( (robotData.y - 1) <= robotData.gridSize && (robotData.y - 1) >= 0 ) return true;
       else return false;
     case 'south':
-      if( (robotData.x + 1) <= robotData.gridSize ) return true;
+      if( (robotData.y + 1) <= robotData.gridSize ) return true;
       else return false;
     case 'east':
-      if( (robotData.y - 1) <= robotData.gridSize  && (robotData.y - 1) >= 0 ) return true;
+      if( (robotData.x - 1) <= robotData.gridSize  && (robotData.x - 1) >= 0 ) return true;
       else return false;
     case 'west':
-      if( (robotData.y + 1) <= robotData.gridSize ) return true;
+      if( (robotData.x + 1) <= robotData.gridSize ) return true;
       else return false;
   }
 }
@@ -59,7 +59,7 @@ if(Meteor.isServer){
       Robot.update('robot', { $set: { y: robotData.y - 1 }})
       robotData = Robot.findOne({ _id: "robot" })
       const result = {
-        currentLocation: [robotData.y, robotData.y]
+        currentLocation: [robotData.x, robotData.y]
       }
       this.response.setHeader('Content-Type','application/json');
       this.response.end(JSON.stringify(result));
