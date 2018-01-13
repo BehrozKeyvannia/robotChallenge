@@ -1,21 +1,21 @@
 import { Meteor } from 'meteor/meteor';
 import * as constants from '../../constants'
 
-//Checks if robot is inside the bounds limitation, returns bool
+//Checks if robot is inside the gridSize limitation, returns bool
 const validRobotMove = (direction) => {
   const robotData = Robot.findOne({ _id: "robot" })
   switch (direction) {
     case 'north':
-      if( (robotData.x - 1) <= robotData.bounds[0] && (robotData.x - 1) >= 0 ) return true;
+      if( (robotData.x - 1) <= robotData.gridSize && (robotData.x - 1) >= 0 ) return true;
       else return false;
     case 'south':
-      if( (robotData.x + 1) <= robotData.bounds[0] ) return true;
+      if( (robotData.x + 1) <= robotData.gridSize ) return true;
       else return false;
     case 'east':
-      if( (robotData.y - 1) <= robotData.bounds[1] && (robotData.y - 1) >= 0 ) return true;
+      if( (robotData.y - 1) <= robotData.gridSize  && (robotData.y - 1) >= 0 ) return true;
       else return false;
     case 'west':
-      if( (robotData.y + 1) <= robotData.bounds[1] ) return true;
+      if( (robotData.y + 1) <= robotData.gridSize ) return true;
       else return false;
   }
 }
@@ -31,7 +31,7 @@ if(Meteor.isServer){
         _id: "robot",
         x: 0,
         y: 0,
-        bounds: constants.bounds
+        gridSize: constants.gridSize
       });
     }catch(e){
       //Already initiated
@@ -56,10 +56,10 @@ if(Meteor.isServer){
   .post(function(){
     var robotData = Robot.findOne({ _id: "robot" })
     if(validRobotMove('north')){
-      Robot.update('robot', { $set: { x: robotData.x - 1 }})
+      Robot.update('robot', { $set: { y: robotData.y - 1 }})
       robotData = Robot.findOne({ _id: "robot" })
       const result = {
-        currentLocation: [robotData.x, robotData.y]
+        currentLocation: [robotData.y, robotData.y]
       }
       this.response.setHeader('Content-Type','application/json');
       this.response.end(JSON.stringify(result));
@@ -74,7 +74,7 @@ if(Meteor.isServer){
   .post(function(){
     var robotData = Robot.findOne({ _id: "robot" })
     if(validRobotMove('south')){
-      Robot.update('robot', { $set: { x: robotData.x + 1 }})
+      Robot.update('robot', { $set: { y: robotData.y + 1 }})
       robotData = Robot.findOne({ _id: "robot" })
       const result = {
         currentLocation: [robotData.x, robotData.y]
@@ -92,7 +92,7 @@ if(Meteor.isServer){
   .post(function(){
     var robotData = Robot.findOne({ _id: "robot" })
     if(validRobotMove('west')){
-      Robot.update('robot', { $set: { y: robotData.y + 1 }})
+      Robot.update('robot', { $set: { x: robotData.x + 1 }})
       robotData = Robot.findOne({ _id: "robot" })
       const result = {
         currentLocation: [robotData.x, robotData.y]
@@ -110,7 +110,7 @@ if(Meteor.isServer){
   .post(function(){
     var robotData = Robot.findOne({ _id: "robot" })
     if(validRobotMove('east')){
-      Robot.update('robot', { $set: { y: robotData.y - 1 }})
+      Robot.update('robot', { $set: { x: robotData.x - 1 }})
       robotData = Robot.findOne({ _id: "robot" })
       const result = {
         currentLocation: [robotData.x, robotData.y]

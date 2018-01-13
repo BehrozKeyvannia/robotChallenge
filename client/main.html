@@ -3,14 +3,16 @@
 </head>
 
 <body>
-
+  
 </body>
 
 <template name="Home">
   <!-- <h1>Robot Challenge</h1> -->
-  {{ >currentLocation }}
-  {{ >buttons }}
-  <!-- {{ >grid }} -->
+  <div style="padding-top: 10px; padding-left: 40px;">
+    {{ >currentLocation }}
+    {{ >buttons }}
+    {{ >grid }}
+  </div>
 </template>
 
 <template name="currentLocation">
@@ -18,31 +20,15 @@
 </template>
 
 <template name="buttons">
-    <button id="up">Up</button>
-    <button id="down">Down</button>
-    <button id="right">Right</button>
-    <button id="left">Left</button>
+  <button id="up">Up</button>
+  <button id="down">Down</button>
+  <button id="right">Right</button>
+  <button id="left">Left</button>
 </template>
 
-<!-- <template name="grid">
-    <div class="row">
-        <div class="col-md-1">.col-md-1</div>
-        <div class="col-md-1">.col-md-1</div>
-        <div class="col-md-1">.col-md-1</div>
-        <div class="col-md-1">.col-md-1</div>
-        <div class="col-md-1">.col-md-1</div>
-        <div class="col-md-1">.col-md-1</div>
-        <div class="col-md-1">.col-md-1</div>
-        <div class="col-md-1">.col-md-1</div>
-        <div class="col-md-1">.col-md-1</div>
-        <div class="col-md-1">.col-md-1</div>
-        <div class="col-md-1">.col-md-1</div>
-        <div class="col-md-1">.col-md-1</div>
-        <div class="col-md-1">.col-md-1</div>
-        <div class="col-md-1">.col-md-1</div>
-        <div class="col-md-1">.col-md-1</div>
-        <div class="col-md-1">.col-md-1</div>
-      </div>
-</template> -->
+<template name="grid">
+  <div class="vertical-flip" id="grid"></div>
+</template>
+
 
 

@@ -1,1 +1,33 @@
 /* CSS declarations go here */
+.grid-box {
+  padding: 14px; 
+  border: solid black; 
+  width: 50px; 
+  height: 50px;
+}
+
+.grid {
+  border: 1px solid #ddd;
+  display: inline-block;
+  padding: 1px;
+}
+.row {
+  margin: 0;
+}
+.cell {
+  border: 1px solid #ddd;
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  margin: 1px;
+  vertical-align: top;
+}
+
+.vertical-flip {
+  -moz-transform: scale(1, -1);
+  -webkit-transform: scale(1, -1);
+  -o-transform: scale(1, -1);
+  -ms-transform: scale(1, -1);
+  transform: scale(1, -1);
+  
+}

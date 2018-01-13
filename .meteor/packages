@@ -22,3 +22,5 @@ iron:router
 http
 twbs:bootstrap
 session
+practicalmeteor:mocha
+jquery
