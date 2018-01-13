@@ -105,8 +105,8 @@ if(Meteor.isClient){
   
   const renderGrid = () => {
     this.grid = new Grid({
-      rows: constants.gridSize,
-      cols: constants.gridSize,
+      rows: constants.gridSize + 1,
+      cols: constants.gridSize + 1,
       render: {
         placeholder: "#grid"
       }
