@@ -24,3 +24,5 @@ twbs:bootstrap
 session
 practicalmeteor:mocha
 jquery
+xolvio:cleaner
+xolvio:backdoor

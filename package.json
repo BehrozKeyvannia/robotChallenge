@@ -2,10 +2,12 @@
   "name": "robotChallenge",
   "private": true,
   "scripts": {
-    "start": "meteor run"
+    "start": "meteor run",
+    "test": "meteor test --once --driver-package practicalmeteor:mocha"
   },
   "dependencies": {
     "babel-runtime": "^6.26.0",
+    "client": "0.0.1",
     "meteor-node-stubs": "^0.3.2"
   }
 }

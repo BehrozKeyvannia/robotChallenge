@@ -5,5 +5,7 @@ module.exports = {
     goWest: "robot/west",
     goNorth: "robot/north",
     goSouth: "robot/south",
-    gridSize: 20
+    obstaclesEndpoint: "robot/obstacles",
+    gridSize: 20,
+    obstacles: [10, 11]
 }

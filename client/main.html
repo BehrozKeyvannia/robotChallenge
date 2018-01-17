@@ -8,15 +8,17 @@
 
 <template name="Home">
   <!-- <h1>Robot Challenge</h1> -->
-  <div style="padding-top: 10px; padding-left: 40px;">
-    {{ >currentLocation }}
-    {{ >buttons }}
-    {{ >grid }}
+  <div class="home">
+    <div style="padding-top: 10px; padding-left: 40px;">
+      {{ >currentLocation }}
+      {{ >buttons }}
+      {{ >grid }}
+    </div>
   </div>
 </template>
 
 <template name="currentLocation">
-  <h3>Current location is ({{ currentLocation }}) </h3>
+  <h3 value="{{currentLocation}}" id="currentLocation">Current location is ({{ currentLocation }}) </h3>
 </template>
 
 <template name="buttons">

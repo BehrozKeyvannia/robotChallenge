@@ -3,7 +3,6 @@ import { ReactiveVar } from 'meteor/reactive-var';
 import { HTTP } from 'meteor/http';
 import * as constants from '../constants'
 import { Session } from 'meteor/session'
-import { $ } from 'meteor/jquery'; //remove package
 
 
 import './main.html';
@@ -14,91 +13,91 @@ if(Meteor.isClient){
     this.render('Home');
   });
 
-  
-  Template.currentLocation.onCreated(function(){
-    HTTP.get(constants.baseUrl + constants.locationEndpoint, {}, function(error, response){
-      if(response.statusCode === 200) {
-        Session.set('currentLocation', response.data.currentLocation);
-        renderGrid()
-        moveRobot(response.data.currentLocation)
-      }
-      else {
-        console.warn("Error in request: " + JSON.stringify(error,null,2));
-      }
+  Meteor.startup(() => {
+    Template.currentLocation.onCreated(function(){
+      getCurrentLocationApiRequest()
+      getObstacles()
     });
-  });
+  })
   
   
   Template.currentLocation.helpers({
     currentLocation () {
+      // $('#currentLocation').val(Session.get('currentLocation'))
       return Session.get('currentLocation')
     },
   });
   
   Template.buttons.events({
     'click  #up': function(){
-      HTTP.post(constants.baseUrl + constants.goNorth, function(error, response){
-        if(response.statusCode === 200) {
-          console.info('Robot >> north' );
-          Session.set('currentLocation', response.data.currentLocation)
-          moveRobot(response.data.currentLocation)
-        }
-        else {
-          if( response.statusCode === 400 ) reportInvalidMove()
-          else{
-            console.error("Error in request: " + JSON.stringify(error,null,2));
-          }
-          
-        }
-      });
+      moveRobotApiRequest('north')
     },
     'click  #down': function(){
-      HTTP.post(constants.baseUrl + constants.goSouth, {}, function(error, response){
-        if(response.statusCode === 200) {
-          console.info('Robot >> south' );
-          Session.set('currentLocation', response.data.currentLocation)
-          moveRobot(response.data.currentLocation)
-        }
-        else {
-          if( response.statusCode === 400 ) reportInvalidMove()
-          else {
-            console.error("Error in request: " + JSON.stringify(error,null,2));
-          }
-        }
-      });
+      moveRobotApiRequest('south')
     },
     'click  #right': function(){
-      HTTP.post(constants.baseUrl + constants.goEast, {}, function(error, response){
-        if(response.statusCode === 200) {
-          console.info('Robot >> east' );
-          Session.set('currentLocation', response.data.currentLocation)
-          moveRobot(response.data.currentLocation)
-        }
-        else {
-          if( response.statusCode === 400 ) reportInvalidMove()
-          else {
-            console.error("Error in request: " + JSON.stringify(error,null,2));
-          }
-        }
-      });
+      moveRobotApiRequest('east')
     },
     'click  #left': function(){
-      HTTP.post(constants.baseUrl + constants.goWest, {}, function(error, response){
-        if(response.statusCode === 200) {
-          console.info('Robot >> west' );
-          Session.set('currentLocation', response.data.currentLocation)
-          moveRobot(response.data.currentLocation)
-        }
-        else {
-          if( response.statusCode === 400 ) reportInvalidMove()
-          else {
-            console.error("Error in request: " + JSON.stringify(error,null,2));
-          }
-        }
-      });
+      moveRobotApiRequest('west')
     },
   });
+
+  const buildUrl = (dir) => {
+    switch (dir) {
+      case 'north':
+        return constants.baseUrl + constants.goNorth;
+      case 'south':
+        return constants.baseUrl + constants.goSouth;
+      case 'east':
+        return constants.baseUrl + constants.goEast;
+      case 'west':
+        return constants.baseUrl + constants.goWest;
+    }
+  }
+
+  const getCurrentLocationApiRequest = () => {
+    return HTTP.get(constants.baseUrl + constants.locationEndpoint, {}, function(error, response){
+      if(response.statusCode === 200) {
+        Session.set('currentLocation', response.data.currentLocation);
+        renderGrid()
+        moveRobot(response.data.currentLocation)
+        return response.data.currentLocation
+      }
+      else {
+        console.warn("Error in request: " + JSON.stringify(error,null,2));
+      }
+    });
+  }
+  const getObstacles = () => {
+    return HTTP.get(constants.baseUrl + constants.obstaclesEndpoint, {}, function(error, response){
+      if(response.statusCode === 200) {
+        renderObstacles(response.data.obstacles)
+      }
+      else {
+        console.warn("Error in request: " + JSON.stringify(error,null,2));
+      }
+    });
+  }
   
+  const moveRobotApiRequest = (direction) => {
+    const request_url = buildUrl(direction)
+    HTTP.post(request_url, {}, function(error, response){
+      if(response.statusCode === 200) {
+        console.info('Robot >> ' + direction );
+        clearCurrentCell()
+        Session.set('currentLocation', response.data.currentLocation)
+        moveRobot(response.data.currentLocation)
+      }
+      else {
+        if( response.statusCode === 400 ) reportInvalidMove()
+        else {
+          console.error("Error in request: " + JSON.stringify(error,null,2));
+        }
+      }
+    });
+  }
+
   const reportInvalidMove = () => {
     console.warn("Invalid move, Robot out of bounds");
   }
@@ -113,10 +112,17 @@ if(Meteor.isClient){
     });
   }
 
+  const renderObstacles = (coords) => {
+    grid.getCellAt(coords[0], coords[1]).$el.css('background', 'red');
+  }
+
   const moveRobot = (coords) => {
-    const x = coords[0]
-    const y = coords[1]
-    grid.getCellAt(x, y).$el.css('background', 'green');
+    grid.getCellAt(coords[0], coords[1]).$el.css('background', 'green');
+  }
+
+  const clearCurrentCell = () => {
+    const currentCoords = Session.get('currentLocation')
+    grid.getCellAt(currentCoords[0], currentCoords[1]).$el.css('background', 'white');
   }
   
 }

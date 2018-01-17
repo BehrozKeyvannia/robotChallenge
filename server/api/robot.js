@@ -20,22 +20,26 @@ const validRobotMove = (direction) => {
   }
 }
 
+const initDatabase = () => {
+  try {
+    Robot.insert({
+      _id: "robot",
+      x: 0,
+      y: 0,
+      gridSize: constants.gridSize,
+      obstacles: constants.obstacles
+    });
+  }catch(e){
+    //Already initiated
+  }
+}
+
 if(Meteor.isServer){
 
   Meteor.startup(() => {
     // code to run on server at startup
     Robot = new Meteor.Collection('robot');
-
-    try {
-      Robot.insert({
-        _id: "robot",
-        x: 0,
-        y: 0,
-        gridSize: constants.gridSize
-      });
-    }catch(e){
-      //Already initiated
-    }
+    initDatabase()
 
   });
 
@@ -44,7 +48,18 @@ if(Meteor.isServer){
   .get(function(){
     var response = Robot.findOne({ _id: "robot" })
     const result = {
-      currentLocation: [response.x, response.y]
+      currentLocation: [response.x, response.y] || [0, 0]
+    }
+    this.response.setHeader('Content-Type','application/json');
+    this.response.end(JSON.stringify(result));
+  });
+
+  //Get current location of robot
+  Router.route(constants.obstaclesEndpoint, {where: 'server'})
+  .get(function(){
+    var response = Robot.findOne({ _id: "robot" })
+    const result = {
+      obstacles: response.obstacles
     }
     this.response.setHeader('Content-Type','application/json');
     this.response.end(JSON.stringify(result));
@@ -55,11 +70,12 @@ if(Meteor.isServer){
   Router.route(constants.goNorth, {where: 'server'})
   .post(function(){
     var robotData = Robot.findOne({ _id: "robot" })
-    if(validRobotMove('north')){
+    let currentLocation = [robotData.x, robotData.y - 1]
+    if(validRobotMove('north') && currentLocation.toString() !== robotData.obstacles.toString() ){
       Robot.update('robot', { $set: { y: robotData.y - 1 }})
       robotData = Robot.findOne({ _id: "robot" })
       const result = {
-        currentLocation: [robotData.x, robotData.y]
+        currentLocation: currentLocation
       }
       this.response.setHeader('Content-Type','application/json');
       this.response.end(JSON.stringify(result));
@@ -73,11 +89,12 @@ if(Meteor.isServer){
   Router.route(constants.goSouth, {where: 'server'})
   .post(function(){
     var robotData = Robot.findOne({ _id: "robot" })
-    if(validRobotMove('south')){
+    let currentLocation = [robotData.x, robotData.y + 1]
+    if(validRobotMove('south') &&  currentLocation.toString() !== robotData.obstacles.toString() ){
       Robot.update('robot', { $set: { y: robotData.y + 1 }})
       robotData = Robot.findOne({ _id: "robot" })
       const result = {
-        currentLocation: [robotData.x, robotData.y]
+        currentLocation: currentLocation
       }
       this.response.setHeader('Content-Type','application/json');
       this.response.end(JSON.stringify(result));
@@ -91,11 +108,12 @@ if(Meteor.isServer){
   Router.route(constants.goWest, {where: 'server'})
   .post(function(){
     var robotData = Robot.findOne({ _id: "robot" })
-    if(validRobotMove('west')){
+    let currentLocation = [robotData.x + 1, robotData.y]
+    if(validRobotMove('west') && currentLocation.toString() !== robotData.obstacles.toString() ){
       Robot.update('robot', { $set: { x: robotData.x + 1 }})
       robotData = Robot.findOne({ _id: "robot" })
       const result = {
-        currentLocation: [robotData.x, robotData.y]
+        currentLocation: currentLocation
       }
       this.response.setHeader('Content-Type','application/json');
       this.response.end(JSON.stringify(result));
@@ -109,11 +127,12 @@ if(Meteor.isServer){
   Router.route(constants.goEast, {where: 'server'})
   .post(function(){
     var robotData = Robot.findOne({ _id: "robot" })
-    if(validRobotMove('east')){
+    let currentLocation = [robotData.x - 1, robotData.y]
+    if(validRobotMove('east') && currentLocation.toString() !== robotData.obstacles.toString() ){
       Robot.update('robot', { $set: { x: robotData.x - 1 }})
       robotData = Robot.findOne({ _id: "robot" })
       const result = {
-        currentLocation: [robotData.x, robotData.y]
+        currentLocation: currentLocation
       }
       this.response.setHeader('Content-Type','application/json');
       this.response.end(JSON.stringify(result));
@@ -124,4 +143,3 @@ if(Meteor.isServer){
   });
 
 }
-
